@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,12 +34,32 @@ public void accept(){
         out = new PrintWriter(incomeConnection.getOutputStream(),true);
         String input,output;
         System.out.println("Waiting for data");
-        while ((input=in.readLine())!=null){
-            if (input.equalsIgnoreCase("q")) break;
+//        while ((input=in.readLine())!=null){
+        //Авторизовани или нет
+        input=in.readLine();
+        //ПРоверяем регистрацию
+
+        if(input.equalsIgnoreCase("y")){
+            out.print("Registed");
+
+            input=in.readLine();
+            ParseJson parseJson = new ParseJson();
+            parseJson.parse(input);
+
+        }else {
+            out.print("Unregistered");
+            //ждем регистрацию
+            input=in.readLine();
+
+        }
+
+
+            if (input.equalsIgnoreCase("q"))
+
             out.println("Server "+input);
             System.out.println(input);
 
-        }
+//        }
         out.close();
         in.close();
         incomeConnection.close();
