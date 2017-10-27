@@ -28,6 +28,14 @@ public void accept(){
     } catch (IOException e) {
         System.out.println("Can't accept!");
         e.printStackTrace();
+
+        try {
+            incomeConnection.close();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+
+
     }
     try {
         in = new BufferedReader(new InputStreamReader(incomeConnection.getInputStream()));
@@ -35,9 +43,10 @@ public void accept(){
         String input,output;
         System.out.println("Waiting for data");
 //        while ((input=in.readLine())!=null){
-        //Авторизовани или нет
+        //Зарегистрирован или нет
         input=in.readLine();
         //ПРоверяем регистрацию
+        System.out.println(input);
 
         if(input.equalsIgnoreCase("y")){
             out.print("Registed");
@@ -54,7 +63,7 @@ public void accept(){
         }
 
 
-            if (input.equalsIgnoreCase("q"))
+//            if (input.equalsIgnoreCase("q")){}
 
             out.println("Server "+input);
             System.out.println(input);
