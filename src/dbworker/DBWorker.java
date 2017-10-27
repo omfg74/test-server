@@ -70,7 +70,24 @@ Connection connectionToBD = null;
             return connection;
         }
 
+    public void createTables() {
+            Connection connection = null;
+        try {
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/testdb"
+                    ,"postgres"
+                    ,"101541");
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS testtable (name VARCHAR," +
+                    "surmane VARCHAR," +
+                    "login VARCHAR," +
+                    "password VARCHAR" +
+                    ");");
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
+}
 
 
 

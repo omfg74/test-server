@@ -1,3 +1,5 @@
+import Objects.RegistrationData;
+import dbworker.DBWorker;
 import org.json.simple.JSONObject;
 
 import java.io.BufferedReader;
@@ -44,21 +46,28 @@ public void accept(){
         System.out.println("Waiting for data");
 //        while ((input=in.readLine())!=null){
         //Зарегистрирован или нет
-        input=in.readLine();
+
+        input= in.readLine();
         //ПРоверяем регистрацию
         System.out.println(input);
 
         if(input.equalsIgnoreCase("y")){
-            out.print("Registed");
+            System.out.print("Registed");
 
             input=in.readLine();
-            ParseJson parseJson = new ParseJson();
-            parseJson.parse(input);
+
 
         }else {
-            out.print("Unregistered");
+            System.out.println("Unregistered");
             //ждем регистрацию
             input=in.readLine();
+            System.out.println(input);
+            ParseJson parseJson = new ParseJson();
+            RegistrationData registrationData = parseJson.parse(input);
+            DBWorker dbWorker = new DBWorker();
+            dbWorker.workConnection();
+//            dbWorker.createNewUser();
+
 
         }
 

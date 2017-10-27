@@ -12,11 +12,13 @@ public class Main {
         if (answer.equalsIgnoreCase("y")){
         Connection connection = dbWorker.getConnection();
         dbWorker.createDB(connection);
+        dbWorker.createTables();
         }else {
             Connection connection = dbWorker.workConnection();
 
         }
 Server server = new Server();
 server.accept();
+
     }
 }
