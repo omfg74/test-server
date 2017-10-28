@@ -1,11 +1,11 @@
+import Logic.Authorisation;
+import Logic.Registration;
 import Objects.RegistrationData;
+import com.sun.org.apache.regexp.internal.RE;
 import dbworker.DBWorker;
 import org.json.simple.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -39,58 +39,17 @@ public void accept(){
 
 
     }
-    try {
-        in = new BufferedReader(new InputStreamReader(incomeConnection.getInputStream()));
-        out = new PrintWriter(incomeConnection.getOutputStream(),true);
-        String input,output;
-        System.out.println("Waiting for data");
-//        while ((input=in.readLine())!=null){
-        //Зарегистрирован или нет
 
-        input= in.readLine();
-        //ПРоверяем регистрацию
-        System.out.println(input);
-
-        if(input.equalsIgnoreCase("y")){
-            System.out.print("Registed");
-
-            input=in.readLine();
-
-
-        }else {
-            System.out.println("Unregistered");
-            //ждем регистрацию
-            input=in.readLine();
-            System.out.println(input);
-            ParseJson parseJson = new ParseJson();
-            RegistrationData registrationData = parseJson.parse(input);
-            DBWorker dbWorker = new DBWorker();
-            dbWorker.workConnection();
-            Boolean exists = dbWorker.checkIfUserExists(registrationData.getLogin());
-            if(!exists){
-                out.println("Creating new User");
-                dbWorker.createNewUser(registrationData);
-            }else {
-                out.println("UserExists");
-            }
-
-
+        boolean registred = false;
+        while (!registred){
+        Registration registration = new Registration();
+      registred = registration.registerNewUser(in,out,incomeConnection,server);
         }
+        boolean authorised = false;
+    Authorisation authorisation = new Authorisation();
+    authorisation.authorise();
 
 
-//            if (input.equalsIgnoreCase("q")){}
-
-            out.println("Server "+input);
-            System.out.println(input);
-
-//        }
-        out.close();
-        in.close();
-        incomeConnection.close();
-        server.close();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
 
 
 }

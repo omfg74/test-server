@@ -1,3 +1,4 @@
+package Logic;
 
 import Objects.RegistrationData;
 import org.json.simple.JSONArray;

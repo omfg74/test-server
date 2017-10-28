@@ -82,7 +82,7 @@ String tablename = "testtable";
                     ,"101541");
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS testtable (name VARCHAR," +
-                    "surmane VARCHAR," +
+                    "surname VARCHAR," +
                     "login VARCHAR," +
                     "password VARCHAR" +
                     ");");
@@ -97,7 +97,10 @@ String tablename = "testtable";
           Connection  connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/testdb"
                     ,"postgres"
                     ,"101541");
-
+          Statement statement = connection.createStatement();
+          statement.executeUpdate("INSERT INTO "+tablename+" (NAME,SURNAME,LOGIN,PASSWORD) " +
+                  " VALUES ('" +registrationData.getName()+"' , '"+registrationData.getSurname()+"' , '"
+                  +registrationData.getLogin()+"' , '"+registrationData.getPassword()+"' );");
 
           connection.close();
         } catch (SQLException e) {
@@ -111,12 +114,15 @@ String tablename = "testtable";
             Connection  connection = DriverManager.getConnection(jdbc,dbuser,passwd);
 
             Statement statement = connection.createStatement();
-            ResultSet result1 = statement.executeQuery("SELECT * FROM TABLE "+tablename+" WHERE Login = "+login);
-           if (result1.next()){
-             exists=true;
+            ResultSet result1 = statement.executeQuery("SELECT * FROM "+tablename+" WHERE Login = '"+login+"'");
+          while (result1.next()){
+             String lo = result1.getString("Login");
+             if(lo.equalsIgnoreCase(login)){
+               exists=true;
             } else {
                exists=false;
            }
+          }
 
             connection.close();
         } catch (SQLException e) {
