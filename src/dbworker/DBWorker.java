@@ -1,12 +1,16 @@
 package dbworker;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import Objects.RegistrationData;
+
+import java.sql.*;
 
 public class DBWorker {
 Connection connectionToBD = null;
+String jdbc = "jdbc:postgresql://localhost:5432/testdb";
+String dbuser = "postgres";
+String passwd = "101541";
+String dbname = "testdb";
+String tablename = "testtable";
     public  Connection getConnection(){
         Connection connection = null;
         try{
@@ -86,6 +90,39 @@ Connection connectionToBD = null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void createNewUser(RegistrationData registrationData) {
+        try {
+          Connection  connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/testdb"
+                    ,"postgres"
+                    ,"101541");
+
+
+          connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Boolean checkIfUserExists(String login) {
+            boolean exists =false;
+        try {
+            Connection  connection = DriverManager.getConnection(jdbc,dbuser,passwd);
+
+            Statement statement = connection.createStatement();
+            ResultSet result1 = statement.executeQuery("SELECT * FROM TABLE "+tablename+" WHERE Login = "+login);
+           if (result1.next()){
+             exists=true;
+            } else {
+               exists=false;
+           }
+
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exists;
     }
 }
 

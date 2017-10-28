@@ -66,7 +66,13 @@ public void accept(){
             RegistrationData registrationData = parseJson.parse(input);
             DBWorker dbWorker = new DBWorker();
             dbWorker.workConnection();
-//            dbWorker.createNewUser();
+            Boolean exists = dbWorker.checkIfUserExists(registrationData.getLogin());
+            if(!exists){
+                out.println("Creating new User");
+                dbWorker.createNewUser(registrationData);
+            }else {
+                out.println("UserExists");
+            }
 
 
         }
