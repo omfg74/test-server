@@ -31,4 +31,19 @@ public class ParseJson {
         }
         return registrationData;
     }
+
+    public RegistrationData parseAuthData(String authData,RegistrationData user) {
+        JSONParser jsonParser = new JSONParser();
+        try {
+            System.out.println(authData);
+            JSONObject jsonObject =  (JSONObject)jsonParser.parse(authData);
+            String login = (String) jsonObject.get("Login");
+            String password = (String) jsonObject.get("Password");
+            user.setLogin(login);
+            user.setPassword(password);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
 }

@@ -130,6 +130,32 @@ String tablename = "testtable";
         }
         return exists;
     }
+
+    public boolean authorise(RegistrationData user) {
+            boolean autorised = false;
+        try {
+            Connection  connection = DriverManager.getConnection(jdbc,dbuser,passwd);
+            Statement statement = connection.createStatement();
+            ResultSet result1 = statement.executeQuery("SELECT password FROM "
+                    +tablename+
+                    " WHERE Login = '"
+                    +user.getLogin()+"'");
+            while (result1.next()){
+                String pas = result1.getString("password");
+                if (pas.equals(user.getPassword())){
+                    autorised=true;
+                }else {
+                    autorised=false;
+                }
+            }
+        } catch (SQLException e) {
+            autorised=false;
+            e.printStackTrace();
+        }
+
+
+        return autorised;
+    }
 }
 
 

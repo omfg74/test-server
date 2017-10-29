@@ -46,10 +46,15 @@ public void accept(){
       registred = registration.registerNewUser(in,out,incomeConnection,server);
         }
         boolean authorised = false;
-    Authorisation authorisation = new Authorisation();
-    authorisation.authorise();
+        while (!authorised) {
+            Authorisation authorisation = new Authorisation();
+           authorised=  authorisation.authorise(in,out,incomeConnection,server);
 
+        }
+        int command=-1;
+        while (command==-1||command==1||command==2){
 
+        }
 
 
 }
