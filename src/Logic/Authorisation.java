@@ -2,11 +2,9 @@ package Logic;
 
 import Objects.RegistrationData;
 import dbworker.DBWorker;
+import org.json.simple.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -21,9 +19,17 @@ public class Authorisation {
             String authData =in.readLine();
             RegistrationData user = new RegistrationData();
             ParseJson parseJson = new ParseJson();
-            user = parseJson.parseAuthData(authData,user);
+            System.out.println(authData);
+            user = parseJson.parseAuthData(authData);
             DBWorker dbWorker = new DBWorker();
            authorised= dbWorker.authorise(user);
+            DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
+            user = dbWorker.getNameSurname(user);
+            PackJson packJson = new PackJson();
+            JSONObject jo=packJson.putNameSurname(user);
+            dataOutputStream.writeBoolean(true);
+            dataOutputStream.writeUTF(jo.toString());
+            dataOutputStream.flush();
             
             
         } catch (IOException e) {

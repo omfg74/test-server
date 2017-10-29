@@ -8,7 +8,7 @@ public class DBWorker {
 Connection connectionToBD = null;
 String jdbc = "jdbc:postgresql://localhost:5432/testdb";
 String dbuser = "postgres";
-String passwd = "101541";
+String passwd = "123456";
 String dbname = "testdb";
 String tablename = "testtable";
     public  Connection getConnection(){
@@ -19,8 +19,8 @@ String tablename = "testtable";
 
             connection = DriverManager.getConnection(
                     "jdbc:postgresql://localhost:5432/"
-                    ,"postgres"
-                    ,"101541");
+                    ,dbuser
+                    ,passwd);
 //createDB(connection);
 
 
@@ -64,10 +64,7 @@ String tablename = "testtable";
         public Connection workConnection(){
             Connection connection= null;
             try {
-                 connection = DriverManager.getConnection(
-                        "jdbc:postgresql://localhost:5432/testdb"
-                        ,"postgres"
-                        ,"101541");
+                 connection = DriverManager.getConnection(jdbc,dbuser,passwd);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -77,9 +74,7 @@ String tablename = "testtable";
     public void createTables() {
             Connection connection = null;
         try {
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/testdb"
-                    ,"postgres"
-                    ,"101541");
+            connection = DriverManager.getConnection(jdbc,dbuser,passwd);
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS testtable (name VARCHAR," +
                     "surname VARCHAR," +
@@ -94,9 +89,7 @@ String tablename = "testtable";
 
     public void createNewUser(RegistrationData registrationData) {
         try {
-          Connection  connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/testdb"
-                    ,"postgres"
-                    ,"101541");
+          Connection  connection = DriverManager.getConnection(jdbc,dbuser,passwd);
           Statement statement = connection.createStatement();
           statement.executeUpdate("INSERT INTO "+tablename+" (NAME,SURNAME,LOGIN,PASSWORD) " +
                   " VALUES ('" +registrationData.getName()+"' , '"+registrationData.getSurname()+"' , '"
@@ -140,8 +133,10 @@ String tablename = "testtable";
                     +tablename+
                     " WHERE Login = '"
                     +user.getLogin()+"'");
+            System.out.println(user.getLogin());
             while (result1.next()){
                 String pas = result1.getString("password");
+                System.out.println(pas);
                 if (pas.equals(user.getPassword())){
                     autorised=true;
                 }else {
@@ -155,6 +150,21 @@ String tablename = "testtable";
 
 
         return autorised;
+    }
+
+    public RegistrationData getNameSurname(RegistrationData user) {
+        try {
+            Connection  connection = DriverManager.getConnection(jdbc,dbuser,passwd);
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM "+tablename+" WHERE Login = '"+user.getLogin()+"'");
+           while (resultSet.next()){
+               user.setName(resultSet.getString("name"));
+               user.setSurname(resultSet.getString("surname"));
+           }
+    } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return user;
     }
 }
 

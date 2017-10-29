@@ -32,13 +32,16 @@ public class ParseJson {
         return registrationData;
     }
 
-    public RegistrationData parseAuthData(String authData,RegistrationData user) {
+    public RegistrationData parseAuthData(String authData) {
+        RegistrationData user = new RegistrationData();
         JSONParser jsonParser = new JSONParser();
         try {
             System.out.println(authData);
             JSONObject jsonObject =  (JSONObject)jsonParser.parse(authData);
-            String login = (String) jsonObject.get("Login");
-            String password = (String) jsonObject.get("Password");
+            String login = (String) jsonObject.get("login");
+            System.out.println(login);
+            String password = (String) jsonObject.get("pass");
+            System.out.println(password);
             user.setLogin(login);
             user.setPassword(password);
         } catch (ParseException e) {

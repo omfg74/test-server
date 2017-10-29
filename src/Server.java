@@ -1,4 +1,6 @@
 import Logic.Authorisation;
+import Logic.CreateNewTask;
+import Logic.ListTasks;
 import Logic.Registration;
 import Objects.RegistrationData;
 import com.sun.org.apache.regexp.internal.RE;
@@ -41,19 +43,44 @@ public void accept(){
     }
 
         boolean registred = false;
+
         while (!registred){
+
         Registration registration = new Registration();
       registred = registration.registerNewUser(in,out,incomeConnection,server);
+
         }
-        boolean authorised = false;
+    boolean authorised = false;
         while (!authorised) {
             Authorisation authorisation = new Authorisation();
            authorised=  authorisation.authorise(in,out,incomeConnection,server);
+            try {
+                DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
+                dataOutputStream.writeBoolean(authorised);
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
         }
         int command=-1;
-        while (command==-1||command==1||command==2){
-
+        while (command==-1||command==1||command==2||!incomeConnection.isClosed()){
+            try {
+                DataInputStream dataInputStream = new DataInputStream(incomeConnection.getInputStream());
+            command=dataInputStream.read();
+            } catch (IOException e) {
+                e.printStackTrace();
+                try {
+                    incomeConnection.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            if(command==1){
+                CreateNewTask createNewTask = new CreateNewTask();
+            }else if(command==2){
+                ListTasks listTasks = new ListTasks();
+            }
         }
 
 

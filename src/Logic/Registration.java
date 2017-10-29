@@ -3,10 +3,7 @@ package Logic;
 import Objects.RegistrationData;
 import dbworker.DBWorker;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -36,7 +33,7 @@ public class Registration {
                 System.out.println("Unregistered");
                 //ждем регистрацию
 
-                input=in.readLine();
+                input=in.readLine();//получаем данные для регистрации
                 System.out.println(input);
                 ParseJson parseJson = new ParseJson();
                 RegistrationData registrationData = parseJson.parse(input);
@@ -45,12 +42,15 @@ public class Registration {
                 Boolean exists = dbWorker.checkIfUserExists(registrationData.getLogin());
                 if(!exists){
                     System.out.println("Creating new User");
-                    out.println(false);
+                    DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
+                    dataOutputStream.writeBoolean(false);
+                    dataOutputStream.flush();
                     dbWorker.createNewUser(registrationData);
                     registred = true;
                 }else {
                     System.out.println("User Exists");
-                    out.println(true);
+                    out.println(false);//Это пиздец какой-то
+                    out.flush();
                     registred =false;
                 }
 
