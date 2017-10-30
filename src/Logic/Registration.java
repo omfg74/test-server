@@ -33,24 +33,25 @@ public class Registration {
                 System.out.println("Unregistered");
                 //ждем регистрацию
 
-                input=in.readLine();//получаем данные для регистрации
-                System.out.println(input);
+                DataInputStream dataInputStream = new DataInputStream(incomeConnection.getInputStream());
+                String inpu1t =dataInputStream.readUTF();//получаем данные для регистрации
+                System.out.println(inpu1t);
                 ParseJson parseJson = new ParseJson();
-                RegistrationData registrationData = parseJson.parse(input);
+                RegistrationData registrationData = parseJson.parse(inpu1t);
                 DBWorker dbWorker = new DBWorker();
                 dbWorker.workConnection();
                 Boolean exists = dbWorker.checkIfUserExists(registrationData.getLogin());
                 if(!exists){
                     System.out.println("Creating new User");
                     DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
-                    dataOutputStream.writeBoolean(false);
+                    dataOutputStream.writeBoolean(true);
                     dataOutputStream.flush();
                     dbWorker.createNewUser(registrationData);
                     registred = true;
                 }else {
                     System.out.println("User Exists");
-                    out.println(false);//Это пиздец какой-то
-                    out.flush();
+                    DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
+                    dataOutputStream.writeBoolean(false);
                     registred =false;
                 }
 

@@ -27,7 +27,7 @@ public class Authorisation {
             user = dbWorker.getNameSurname(user);
             PackJson packJson = new PackJson();
             JSONObject jo=packJson.putNameSurname(user);
-            dataOutputStream.writeBoolean(true);
+            dataOutputStream.writeBoolean(authorised);
             dataOutputStream.writeUTF(jo.toString());
             dataOutputStream.flush();
             

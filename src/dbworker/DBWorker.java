@@ -83,12 +83,14 @@ String tasktable = "tasktable";
                     "login VARCHAR," +
                     "password VARCHAR" +
                     ");");
+            System.out.println("TestTable created....");
             Statement statement1 = connection.createStatement();
-            statement1.executeUpdate("CREATE TABLE IF NOT EXISTS tasksTable (login VARCHAR," +
+            statement1.executeUpdate("CREATE TABLE IF NOT EXISTS "+tasktable+" (login VARCHAR," +
                     "task VARCHAR," +
                             "status VARCHAR," +
                             "result VARCHAR" +
                             ");");
+            System.out.println("TaskTable created...");
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -145,6 +147,7 @@ String tasktable = "tasktable";
             while (result1.next()){
                 String pas = result1.getString("password");
                 System.out.println(pas);
+                System.out.println(user.getPassword());
                 if (pas.equals(user.getPassword())){
                     autorised=true;
                 }else {
@@ -154,6 +157,7 @@ String tasktable = "tasktable";
         } catch (SQLException e) {
             autorised=false;
             e.printStackTrace();
+
         }
 
 

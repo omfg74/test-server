@@ -11,7 +11,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class Server {
+public class Server extends ServerThread {
     public static final int port = 3535;
     ServerSocket server;
     Socket incomeConnection;
@@ -32,7 +32,7 @@ public void accept(){
     } catch (IOException e) {
         System.out.println("Can't accept!");
         e.printStackTrace();
-
+        currentThread().stop();
         try {
             incomeConnection.close();
         } catch (IOException e1) {
@@ -59,6 +59,13 @@ public void accept(){
                 dataOutputStream.writeBoolean(authorised);
 
             } catch (IOException e) {
+                try {
+                    currentThread().stop();
+                    incomeConnection.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                currentThread().stop();
                 e.printStackTrace();
             }
 
@@ -69,18 +76,21 @@ public void accept(){
                 DataInputStream dataInputStream = new DataInputStream(incomeConnection.getInputStream());
             command=dataInputStream.read();
                 System.out.println(command);
+
             } catch (IOException e) {
                 e.printStackTrace();
                 try {
+                    currentThread().stop();
                     incomeConnection.close();
                 } catch (IOException e1) {
-                    e1.printStackTrace();
+
+
                 }
             }
-            if(command==1){
+            if(command==2){
                 CreateNewTask createNewTask = new CreateNewTask(incomeConnection);
                 createNewTask.run();
-            }else if(command==2){
+            }else if(command==1){
                 ListTasks listTasks = new ListTasks();
             }
         }

@@ -17,8 +17,11 @@ public class Main {
             Connection connection = dbWorker.workConnection();
 
         }
-Server server = new Server();
-server.accept();
+
+        ServerThread serverThread = new ServerThread();
+        serverThread.run();
+
 
     }
+
 }
