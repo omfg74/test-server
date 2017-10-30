@@ -81,6 +81,12 @@ String tablename = "testtable";
                     "login VARCHAR," +
                     "password VARCHAR" +
                     ");");
+            Statement statement1 = connection.createStatement();
+            statement1.executeUpdate("CREATE TABLE IF NOT EXISTS tasksTable (login VARCHAR," +
+                    "task VARCHAR," +
+                            "status VARCHAR," +
+                            "result VARCHAR" +
+                            ");");
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
