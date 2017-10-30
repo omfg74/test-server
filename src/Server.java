@@ -68,6 +68,7 @@ public void accept(){
             try {
                 DataInputStream dataInputStream = new DataInputStream(incomeConnection.getInputStream());
             command=dataInputStream.read();
+                System.out.println(command);
             } catch (IOException e) {
                 e.printStackTrace();
                 try {
@@ -77,7 +78,8 @@ public void accept(){
                 }
             }
             if(command==1){
-                CreateNewTask createNewTask = new CreateNewTask();
+                CreateNewTask createNewTask = new CreateNewTask(incomeConnection);
+                createNewTask.run();
             }else if(command==2){
                 ListTasks listTasks = new ListTasks();
             }

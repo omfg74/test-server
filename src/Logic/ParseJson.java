@@ -1,6 +1,8 @@
 package Logic;
 
 import Objects.RegistrationData;
+import Objects.Task;
+import com.sun.org.apache.regexp.internal.RE;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -48,5 +50,24 @@ public class ParseJson {
             e.printStackTrace();
         }
         return user;
+    }
+
+    public Task parseNewTask(String newTask) {
+        Task task  = new Task();
+        JSONParser jsonParser = new JSONParser();
+        try {
+            JSONObject jsonObject = (JSONObject)jsonParser.parse(newTask);
+            String login = (String) jsonObject.get("login");
+            String taskName = (String) jsonObject.get("task");
+            task.setLogin(login);
+            task.setName(taskName);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return task;
+
+
     }
 }

@@ -1,6 +1,7 @@
 package dbworker;
 
 import Objects.RegistrationData;
+import Objects.Task;
 
 import java.sql.*;
 
@@ -8,9 +9,10 @@ public class DBWorker {
 Connection connectionToBD = null;
 String jdbc = "jdbc:postgresql://localhost:5432/testdb";
 String dbuser = "postgres";
-String passwd = "123456";
+String passwd = "101541";
 String dbname = "testdb";
 String tablename = "testtable";
+String tasktable = "tasktable";
     public  Connection getConnection(){
         Connection connection = null;
         try{
@@ -171,6 +173,23 @@ String tablename = "testtable";
             e.printStackTrace();
         }
         return user;
+    }
+
+    public void createNewTask(Task task) {
+        Connection  connection = null;
+        try {
+            connection = DriverManager.getConnection(jdbc,dbuser,passwd);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            Statement statement = connection.createStatement();
+            statement.executeUpdate("INSERT INTO "+tasktable+" (LOGIN,TASK,STATUS,RESULT)"+
+                    " VALUES( '"+task.getLogin()+"' , '"+task.getName()+" ',' "+task.getStatus()+"' , '"+
+                    task.getResult()+"')");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
 
