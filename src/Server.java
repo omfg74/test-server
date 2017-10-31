@@ -1,7 +1,4 @@
-import Logic.Authorisation;
-import Logic.CreateNewTask;
-import Logic.ListTasks;
-import Logic.Registration;
+import Logic.*;
 import Objects.RegistrationData;
 import com.sun.org.apache.regexp.internal.RE;
 import dbworker.DBWorker;
@@ -41,15 +38,41 @@ public void accept(){
 
 
     }
+String type=null;
+    String income = null;
+    boolean exit = false;
+    while (!exit){
 
-        boolean registred = false;
+    try {
+        DataInputStream dataInputStream = new DataInputStream(incomeConnection.getInputStream());
 
-        while (!registred){
+        ParseJson parseJson = new ParseJson();
+        income = dataInputStream.readUTF();
+      type = parseJson.parseIncome(income);
+
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    boolean registred = false;
+if(type.equalsIgnoreCase("registr")){
+
+
 
         Registration registration = new Registration();
-      registred = registration.registerNewUser(in,out,incomeConnection,server);
+      registred = registration.registerNewUser(in,out,incomeConnection,server,income);
+      PackJson packJson = new PackJson();
+      JSONObject ans = packJson.makeRegAnswer(registred);
+    System.out.println("RegAns "+ans);
 
-        }
+    try {
+        DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
+    dataOutputStream.writeUTF(ans.toString());
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+
+
+}else if(type.equalsIgnoreCase("auth")){
     boolean authorised = false;
         while (!authorised) {
             Authorisation authorisation = new Authorisation();
@@ -70,6 +93,8 @@ public void accept(){
             }
 
         }
+}else if(type.equalsIgnoreCase("menu")){
+
         int command=-1;
         while (command==-1||command==1||command==2||!incomeConnection.isClosed()){
             try {
@@ -96,6 +121,11 @@ public void accept(){
         }
 
 
+}else {
+    System.exit(0);
+}
+
+    }
 }
 }
 

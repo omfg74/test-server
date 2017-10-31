@@ -70,4 +70,16 @@ public class ParseJson {
 
 
     }
+
+    public String parseIncome(String string) {
+        String type=null;
+        JSONParser jsonParser = new JSONParser();
+        try {
+            JSONObject jsonObject = (JSONObject)jsonParser.parse(string);
+            type = (String)jsonObject.get("Type");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return type;
+    }
 }
