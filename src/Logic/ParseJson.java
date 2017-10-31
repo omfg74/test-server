@@ -40,6 +40,8 @@ public class ParseJson {
         try {
             System.out.println(authData);
             JSONObject jsonObject =  (JSONObject)jsonParser.parse(authData);
+            String type = (String) jsonObject.get("type");
+            System.out.println(type);
             String login = (String) jsonObject.get("login");
             System.out.println(login);
             String password = (String) jsonObject.get("pass");
@@ -76,10 +78,22 @@ public class ParseJson {
         JSONParser jsonParser = new JSONParser();
         try {
             JSONObject jsonObject = (JSONObject)jsonParser.parse(string);
-            type = (String)jsonObject.get("Type");
+            type = (String)jsonObject.get("type");
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return type;
+    }
+
+    public JSONObject parseCommand(String income) {
+       JSONObject jo = null;
+        JSONParser jsonParser = new JSONParser();
+        try {
+            jo = (JSONObject)jsonParser.parse(income);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+return jo;
     }
 }

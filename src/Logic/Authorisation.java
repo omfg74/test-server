@@ -10,27 +10,29 @@ import java.net.Socket;
 
 
 public class Authorisation {
-    public boolean authorise(BufferedReader in, PrintWriter out, Socket incomeConnection, ServerSocket server) {
+
+    public boolean authorise(BufferedReader in, PrintWriter out, Socket incomeConnection, ServerSocket server, String incomeJson) {
      boolean authorised = false;
         try {
-            in = new BufferedReader(new InputStreamReader(incomeConnection.getInputStream()));
+//            in = new BufferedReader(new InputStreamReader(incomeConnection.getInputStream()));
             out = new PrintWriter(incomeConnection.getOutputStream(),true);
-            
-            String authData =in.readLine();
+//            DataInputStream dataInputStream = new DataInputStream(incomeConnection.getInputStream());
+//            String authData =dataInputStream.readUTF();
             RegistrationData user = new RegistrationData();
             ParseJson parseJson = new ParseJson();
-            System.out.println(authData);
-            user = parseJson.parseAuthData(authData);
+            System.out.println(incomeJson);
+            user = parseJson.parseAuthData(incomeJson);
             DBWorker dbWorker = new DBWorker();
            authorised= dbWorker.authorise(user);
-            DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
+//            DataOutputStream dataOutputStream1 = new DataOutputStream(incomeConnection.getOutputStream());
             user = dbWorker.getNameSurname(user);
             PackJson packJson = new PackJson();
             JSONObject jo=packJson.putNameSurname(user);
-            dataOutputStream.writeBoolean(authorised);
-            dataOutputStream.writeUTF(jo.toString());
-            dataOutputStream.flush();
-            
+//            dataOutputStream1.writeBoolean(authorised);
+//            dataOutputStream1.writeUTF(jo.toString());
+//            dataOutputStream1.flush();
+            System.out.println("Retunable user"+jo);
+
             
         } catch (IOException e) {
             e.printStackTrace();
@@ -40,4 +42,5 @@ public class Authorisation {
 
         return authorised;
     }
+
 }

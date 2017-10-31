@@ -85,7 +85,8 @@ String tasktable = "tasktable";
                     ");");
             System.out.println("TestTable created....");
             Statement statement1 = connection.createStatement();
-            statement1.executeUpdate("CREATE TABLE IF NOT EXISTS "+tasktable+" (login VARCHAR," +
+            statement1.executeUpdate("CREATE TABLE IF NOT EXISTS "+tasktable+" (id SERIAL," +
+                    "login VARCHAR," +
                     "task VARCHAR," +
                             "status VARCHAR," +
                             "result VARCHAR" +
@@ -179,21 +180,33 @@ String tasktable = "tasktable";
         return user;
     }
 
-    public void createNewTask(Task task) {
+    public Long createNewTask(Task task) {
         Connection  connection = null;
+        Long id =0L;
         try {
             connection = DriverManager.getConnection(jdbc,dbuser,passwd);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         try {
-            Statement statement = connection.createStatement();
-            statement.executeUpdate("INSERT INTO "+tasktable+" (LOGIN,TASK,STATUS,RESULT)"+
-                    " VALUES( '"+task.getLogin()+"' , '"+task.getName()+" ',' "+task.getStatus()+"' , '"+
-                    task.getResult()+"')");
+           PreparedStatement statement= connection.prepareStatement("INSERT INTO "+tasktable+" (LOGIN,TASK,STATUS,RESULT)"+
+                    " VALUES(?,?,?,? ) RETURNING id;");
+           statement.setString(1,task.getLogin());
+           statement.setString(2,task.getName());
+           statement.setString(3,task.getStatus());
+           statement.setString(4,task.getResult());
+           statement.execute();
+           ResultSet resultSet = statement.getResultSet();
+           if(resultSet.next()) {
+               id = resultSet.getLong(1);
+           }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return id;
+    }
+
+    public void updateTaskStatus(Long id) {
     }
 }
 

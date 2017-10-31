@@ -1,6 +1,7 @@
 package Logic;
 
 import Objects.RegistrationData;
+import Objects.Task;
 import org.json.simple.JSONObject;
 
 public class PackJson {
@@ -17,8 +18,32 @@ public class PackJson {
         if(b){
             jo.put("Text ","Regitred");
         }else if(!b){
-            jo.put("Text","The user already exists");
+            jo.put("Text ","The user already exists");
         }
+
+        return jo;
+    }
+
+    public JSONObject makeAuthAnswer(boolean b) {
+        JSONObject jo = new JSONObject();
+        jo.put("Answer",b);
+        if(b){
+            jo.put("Text ","Regitred");
+        }else if(!b){
+            jo.put("Text ","Authorisation Failed");
+        }
+
+        return jo;
+    }
+
+    public JSONObject packStartedTask(Task task, Long id) {
+        JSONObject jo = new JSONObject();
+        //возможно придется пилить type
+        System.out.println(task.getName());
+        jo.put("taskType",task.getName());
+        jo.put("id",id);
+        jo.put("status",task.getStatus());
+        jo.put("result",task.getResult());
 
         return jo;
     }

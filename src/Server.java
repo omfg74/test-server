@@ -3,6 +3,7 @@ import Objects.RegistrationData;
 import com.sun.org.apache.regexp.internal.RE;
 import dbworker.DBWorker;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -38,11 +39,11 @@ public void accept(){
 
 
     }
-String type=null;
-    String income = null;
+
     boolean exit = false;
     while (!exit){
-
+        String type=null;
+        String income = null;
     try {
         DataInputStream dataInputStream = new DataInputStream(incomeConnection.getInputStream());
 
@@ -67,65 +68,64 @@ if(type.equalsIgnoreCase("registr")){
     try {
         DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
     dataOutputStream.writeUTF(ans.toString());
+
     } catch (IOException e) {
         e.printStackTrace();
     }
 
 
+
 }else if(type.equalsIgnoreCase("auth")){
     boolean authorised = false;
-        while (!authorised) {
+
             Authorisation authorisation = new Authorisation();
-           authorised=  authorisation.authorise(in,out,incomeConnection,server);
-            try {
-                DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
-                dataOutputStream.writeBoolean(authorised);
+           authorised=  authorisation.authorise(in,out,incomeConnection,server,income);
+    try {
+        PackJson packJson = new PackJson();
+        JSONObject ans = packJson.makeAuthAnswer(authorised);
+        System.out.println("Authans "+ans);
+        DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
+        dataOutputStream.writeUTF(ans.toString());
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    if(authorised){
 
-            } catch (IOException e) {
-                try {
-                    currentThread().stop();
-                    incomeConnection.close();
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                currentThread().stop();
-                e.printStackTrace();
-            }
+           }
 
-        }
+
+
 }else if(type.equalsIgnoreCase("menu")){
 
         int command=-1;
-        while (command==-1||command==1||command==2||!incomeConnection.isClosed()){
-            try {
-                DataInputStream dataInputStream = new DataInputStream(incomeConnection.getInputStream());
-            command=dataInputStream.read();
-                System.out.println(command);
+//        while (command==-1||command==1||command==2||!incomeConnection.isClosed()){
+            RegistrationData user = new RegistrationData();
+            ParseJson parseJson = new ParseJson();
+            JSONObject jo= parseJson.parseCommand(income);
 
-            } catch (IOException e) {
-                e.printStackTrace();
-                try {
-                    currentThread().stop();
-                    incomeConnection.close();
-                } catch (IOException e1) {
+            System.out.println(income);
+
+                command = Integer.parseInt(jo.get("item").toString());
 
 
-                }
-            }
-            if(command==2){
-                CreateNewTask createNewTask = new CreateNewTask(incomeConnection);
+            user.setLogin((String)jo.get("login"));
+
+            if(command==1){
+                CreateNewTask createNewTask = new CreateNewTask(incomeConnection,user,command);
                 createNewTask.run();
-            }else if(command==1){
+                command=-1;//сильно под вопростом
+            }else if(command==2){
                 ListTasks listTasks = new ListTasks();
             }
         }
 
 
-}else {
+else {
+    //Вставать на слушателя
     System.exit(0);
 }
 
-    }
-}
-}
+
+}}}
+
 

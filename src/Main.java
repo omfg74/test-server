@@ -19,7 +19,7 @@ public class Main {
         }
 
         ServerThread serverThread = new ServerThread();
-        serverThread.run();
+        serverThread.start();
 
 
     }
