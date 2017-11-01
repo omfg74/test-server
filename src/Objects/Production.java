@@ -14,8 +14,8 @@ public class Production extends Thread{
     Long id;
     Socket incomeConnection;
     Task task;
-    public Production(Long id, Socket incomeConnection, Task task) {
-    this.id =id;
+    public Production(Socket incomeConnection, Task task) {
+//    this.id =id;
     this.incomeConnection = incomeConnection;
    this.task = task;
     }
@@ -25,9 +25,9 @@ public class Production extends Thread{
         System.out.println("Produstion running");
         //todo
         try {
-            for (int i = 0; i <5 ; i++) {//поменять на 180
+            for (int i = 0; i <180 ; i++) {//поменять на 180
                 TimeUnit.SECONDS.sleep(1);
-                System.out.print(i+" ");
+//                System.out.print(i+" ");
 
             }
 
@@ -36,15 +36,16 @@ public class Production extends Thread{
         }
         System.out.println("Production stopped");
         DBWorker dbWorker = new DBWorker();
-        task.setStatus("COMOLETE");
-       Task task1  = dbWorker.updateTaskStatus(id,task);
+        task.setStatus("COMPLETE");
+       dbWorker.updateTaskStatus(task);
 
         PackJson packJson = new PackJson();
-        JSONObject jo = packJson.packUpdate(task1);
+        JSONObject jo = packJson.packUpdate(task);
 
         try {
             DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
-
+dataOutputStream.writeUTF(jo.toString());
+            System.out.println(jo);
 //            dataOutputStream.writeUTF();
         } catch (IOException e) {
             e.printStackTrace();

@@ -20,7 +20,7 @@ public class Authorisation {
 //            String authData =dataInputStream.readUTF();
             RegistrationData user = new RegistrationData();
             ParseJson parseJson = new ParseJson();
-            System.out.println(incomeJson);
+//            System.out.println(incomeJson);
             user = parseJson.parseAuthData(incomeJson);
             DBWorker dbWorker = new DBWorker();
            authorised= dbWorker.authorise(user);
@@ -31,7 +31,7 @@ public class Authorisation {
 //            dataOutputStream1.writeBoolean(authorised);
 //            dataOutputStream1.writeUTF(jo.toString());
 //            dataOutputStream1.flush();
-            System.out.println("Retunable user"+jo);
+//            System.out.println("Retunable user"+jo);
 
             
         } catch (IOException e) {

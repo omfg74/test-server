@@ -11,7 +11,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-public class CreateNewTask implements Runnable {
+public class CreateNewTask extends Thread{
 Socket incomeConnection;
 RegistrationData user;
 int command;
@@ -36,12 +36,15 @@ this.command =command;
 
 
             DBWorker dbWorker = new DBWorker();
-            Long id = dbWorker.createNewTask(task);
-            Production production = new Production(id,incomeConnection,task);
-            production.start();
+            long id = dbWorker.createNewTask(task);
+            task.setId(id);
+            System.out.println("id "+id);
             PackJson packJson = new PackJson();
             JSONObject jo =packJson.packStartedTask(task,id);
             dataOutputStream.writeUTF(jo.toString());
+            Production production = new Production(incomeConnection,task);
+            production.start();
+
 
 
 

@@ -2,9 +2,11 @@ package Logic;
 
 import Objects.RegistrationData;
 import Objects.Task;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class PackJson {
     public JSONObject putNameSurname(RegistrationData user){
@@ -41,7 +43,7 @@ public class PackJson {
     public JSONObject packStartedTask(Task task, Long id) {
         JSONObject jo = new JSONObject();
         //возможно придется пилить type
-        System.out.println(task.getName());
+//        System.out.println(task.getName());
         jo.put("taskType",task.getName());
         jo.put("id",id);
         jo.put("status",task.getStatus());
@@ -50,18 +52,29 @@ public class PackJson {
         return jo;
     }
 
-    public JSONObject packList(Task list) {
+    public JSONObject packList(ArrayList<Task> list) {
         JSONObject jo = new JSONObject();
+        JSONArray ar = new JSONArray();
+        for (int i = 0; i < list.size(); i++) {
+
+            ar.add(list.get(i).getId());
+            ar.add(list.get(i).getStatus());
+
+            
+        }
+//        System.out.println(ar);
         jo.put("taskType","list");
-        jo.put("content",list);
+        jo.put("content",ar);
         return jo;
     }
 
     public JSONObject packUpdate(Task task1) {
  JSONObject jo = new JSONObject();
+// jo.put("task","list");
  jo.put("taskType","update");
  jo.put("id",task1.getId());
  jo.put("status",task1.getStatus());
+//        System.out.println("jo status"+task1.getStatus());
  jo.put("result",task1.getResult());
  jo.put("name",task1.getName());
 

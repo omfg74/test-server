@@ -112,10 +112,18 @@ if(type.equalsIgnoreCase("registr")){
 
             if(command==1){
                 CreateNewTask createNewTask = new CreateNewTask(incomeConnection,user,command);
-                createNewTask.run();
+                createNewTask.start();
                 command=-1;//сильно под вопростом
             }else if(command==2){
                 ListTasks listTasks = new ListTasks();
+               JSONObject jsonObject =  listTasks.makeNewList(incomeConnection,user,command);
+                try {
+                    DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
+                dataOutputStream.writeUTF(jsonObject.toString());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
             }
         }
 

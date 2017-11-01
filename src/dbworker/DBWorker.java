@@ -2,6 +2,7 @@ package dbworker;
 
 import Objects.RegistrationData;
 import Objects.Task;
+import com.sun.org.apache.regexp.internal.RE;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -145,11 +146,10 @@ String tasktable = "tasktable";
                     +tablename+
                     " WHERE Login = '"
                     +user.getLogin()+"'");
-            System.out.println(user.getLogin());
+//
             while (result1.next()){
                 String pas = result1.getString("password");
-                System.out.println(pas);
-                System.out.println(user.getPassword());
+
                 if (pas.equals(user.getPassword())){
                     autorised=true;
                 }else {
@@ -183,7 +183,7 @@ String tasktable = "tasktable";
 
     public Long createNewTask(Task task) {
         Connection  connection = null;
-        Long id =0L;
+        long id =0L;
         try {
             connection = DriverManager.getConnection(jdbc,dbuser,passwd);
         } catch (SQLException e) {
@@ -208,72 +208,53 @@ String tasktable = "tasktable";
         return id;
     }
 
-    public Task updateTaskStatus(Long id,Task task1) {
+    public void updateTaskStatus(Task task1) {
+//        System.out.println(task1.getStatus());
 
         Connection  connection = null;
-       id =0L;
+
         try {
             connection = DriverManager.getConnection(jdbc,dbuser,passwd);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         try {
-            PreparedStatement statement= connection.prepareStatement("Update "+tasktable+" SET "
-                    +" (LOGIN,TASK,STATUS,RESULT)"+
-                    " VALUES(?,?,?,?,? ) WHERE id = "+id+" RETURNING id,LOGIN,TASK,STATUS,RESULT;");
-            statement.setLong(1,task1.getId());
-            statement.setString(2,task1.getLogin());
-            statement.setString(3,task1.getName());
-            statement.setString(4,task1.getStatus());
-            statement.setString(5,task1.getResult());
-            statement.execute();
-            ResultSet resultSet = statement.getResultSet();
-            if(resultSet.next()) {
-
-                task1.setId(resultSet.getLong(1));
-                task1.setLogin(  resultSet.getString(2));
-                task1.setName(  resultSet.getString(3));
-                task1.setStatus(  resultSet.getString(4));
-                task1.setResult(  resultSet.getString(5));
-
-            }
+            PreparedStatement statement= connection.prepareStatement("UPDATE "+tasktable+" SET status "+"=  '"+task1.getStatus()+
+                    "' WHERE id = "+task1.getId()+";");
+//
+            statement.executeUpdate();
+//
+//            }
             connection.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return task1;
+
 
     }
 
-    public ArrayList createList(Long id,Task task1) {
+    public ArrayList createList(RegistrationData user) {
         ArrayList<Task> tasks=null;
         Connection  connection = null;
-        id =0L;
+
         try {
             connection = DriverManager.getConnection(jdbc,dbuser,passwd);
         } catch (SQLException e) {
             e.printStackTrace();
         }
         try {
-            PreparedStatement statement= connection.prepareStatement("Update "+tasktable+" SET "
-                    +" (LOGIN,TASK,STATUS,RESULT)"+
-                    " VALUES(?,?,?,?,? ) WHERE id = "+id+" RETURNING id,LOGIN,TASK,STATUS,RESULT;");
-            statement.setLong(1,task1.getId());
-            statement.setString(2,task1.getLogin());
-            statement.setString(3,task1.getName());
-            statement.setString(4,task1.getStatus());
-            statement.setString(5,task1.getResult());
-            statement.execute();
-            ResultSet resultSet = statement.getResultSet();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT * FROM "+tasktable+" WHERE Login = '"+user.getLogin()+"'");
             tasks = new ArrayList<>();
-            if(resultSet.next()) {
+            while (resultSet.next()){
                 Task task = new Task();
-                task.setId(resultSet.getLong(1));
-                task.setLogin(  resultSet.getString(2));
-                task.setName(  resultSet.getString(3));
-                task.setStatus(  resultSet.getString(4));
-                task.setResult(  resultSet.getString(5));
+                task.setId(resultSet.getLong("id"));
+                task.setName(resultSet.getString("task"));
+                task.setLogin(resultSet.getString("login"));
+                task.setStatus(resultSet.getString("status"));
+                task.setResult(resultSet.getString("result"));
                 tasks.add(task);
+//                System.out.println(task.getId()+task.getStatus());
             }
             connection.close();
         } catch (SQLException e) {
