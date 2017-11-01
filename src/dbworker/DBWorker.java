@@ -4,6 +4,7 @@ import Objects.RegistrationData;
 import Objects.Task;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class DBWorker {
 Connection connectionToBD = null;
@@ -189,7 +190,8 @@ String tasktable = "tasktable";
             e.printStackTrace();
         }
         try {
-           PreparedStatement statement= connection.prepareStatement("INSERT INTO "+tasktable+" (LOGIN,TASK,STATUS,RESULT)"+
+           PreparedStatement statement= connection.prepareStatement("INSERT INTO "+tasktable+
+                   " (LOGIN,TASK,STATUS,RESULT)"+
                     " VALUES(?,?,?,? ) RETURNING id;");
            statement.setString(1,task.getLogin());
            statement.setString(2,task.getName());
@@ -206,7 +208,42 @@ String tasktable = "tasktable";
         return id;
     }
 
-    public void updateTaskStatus(Long id) {
+    public ArrayList updateTaskStatus(Long id,Task task1) {
+        ArrayList<Task> tasks=null;
+        Connection  connection = null;
+       id =0L;
+        try {
+            connection = DriverManager.getConnection(jdbc,dbuser,passwd);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            PreparedStatement statement= connection.prepareStatement("Update "+tasktable+" SET "
+                    +" (LOGIN,TASK,STATUS,RESULT)"+
+                    " VALUES(?,?,?,?,? ) WHERE id = "+id+" RETURNING id,LOGIN,TASK,STATUS,RESULT;");
+            statement.setLong(1,task1.getId());
+            statement.setString(2,task1.getLogin());
+            statement.setString(3,task1.getName());
+            statement.setString(4,task1.getStatus());
+            statement.setString(5,task1.getResult());
+            statement.execute();
+            ResultSet resultSet = statement.getResultSet();
+            tasks = new ArrayList<>();
+            if(resultSet.next()) {
+                Task task = new Task();
+                task.setId(resultSet.getLong(1));
+                task.setLogin(  resultSet.getString(2));
+                task.setName(  resultSet.getString(3));
+                task.setStatus(  resultSet.getString(4));
+                task.setResult(  resultSet.getString(5));
+               tasks.add(task);
+            }
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return tasks;
+
     }
 }
 

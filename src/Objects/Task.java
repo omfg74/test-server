@@ -1,6 +1,10 @@
 package Objects;
 
 public class Task {
+    private Long id;
+
+
+
     private String login;
     private String name;
     private String result;
@@ -38,5 +42,12 @@ public class Task {
 
     public String getResult() {
         return result;
+    }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

@@ -1,18 +1,23 @@
 package Objects;
 
+import Logic.PackJson;
 import dbworker.DBWorker;
+import org.json.simple.JSONObject;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 public class Production extends Thread{
     Long id;
     Socket incomeConnection;
+    Task task;
     public Production(Long id, Socket incomeConnection, Task task) {
     this.id =id;
     this.incomeConnection = incomeConnection;
+   this.task = task;
     }
 
     @Override
@@ -31,7 +36,10 @@ public class Production extends Thread{
         }
         System.out.println("Production stopped");
         DBWorker dbWorker = new DBWorker();
-        dbWorker.updateTaskStatus(id);
+       ArrayList tasks  = dbWorker.updateTaskStatus(id,task);
+
+        PackJson packJson = new PackJson();
+        JSONObject jo =
 
         try {
             DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
