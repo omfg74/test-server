@@ -208,10 +208,47 @@ String tasktable = "tasktable";
         return id;
     }
 
-    public ArrayList updateTaskStatus(Long id,Task task1) {
-        ArrayList<Task> tasks=null;
+    public Task updateTaskStatus(Long id,Task task1) {
+
         Connection  connection = null;
        id =0L;
+        try {
+            connection = DriverManager.getConnection(jdbc,dbuser,passwd);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        try {
+            PreparedStatement statement= connection.prepareStatement("Update "+tasktable+" SET "
+                    +" (LOGIN,TASK,STATUS,RESULT)"+
+                    " VALUES(?,?,?,?,? ) WHERE id = "+id+" RETURNING id,LOGIN,TASK,STATUS,RESULT;");
+            statement.setLong(1,task1.getId());
+            statement.setString(2,task1.getLogin());
+            statement.setString(3,task1.getName());
+            statement.setString(4,task1.getStatus());
+            statement.setString(5,task1.getResult());
+            statement.execute();
+            ResultSet resultSet = statement.getResultSet();
+            if(resultSet.next()) {
+
+                task1.setId(resultSet.getLong(1));
+                task1.setLogin(  resultSet.getString(2));
+                task1.setName(  resultSet.getString(3));
+                task1.setStatus(  resultSet.getString(4));
+                task1.setResult(  resultSet.getString(5));
+
+            }
+            connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return task1;
+
+    }
+
+    public ArrayList createList(Long id,Task task1) {
+        ArrayList<Task> tasks=null;
+        Connection  connection = null;
+        id =0L;
         try {
             connection = DriverManager.getConnection(jdbc,dbuser,passwd);
         } catch (SQLException e) {
@@ -236,7 +273,7 @@ String tasktable = "tasktable";
                 task.setName(  resultSet.getString(3));
                 task.setStatus(  resultSet.getString(4));
                 task.setResult(  resultSet.getString(5));
-               tasks.add(task);
+                tasks.add(task);
             }
             connection.close();
         } catch (SQLException e) {

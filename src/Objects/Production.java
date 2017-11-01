@@ -36,10 +36,11 @@ public class Production extends Thread{
         }
         System.out.println("Production stopped");
         DBWorker dbWorker = new DBWorker();
-       ArrayList tasks  = dbWorker.updateTaskStatus(id,task);
+        task.setStatus("COMOLETE");
+       Task task1  = dbWorker.updateTaskStatus(id,task);
 
         PackJson packJson = new PackJson();
-        JSONObject jo =
+        JSONObject jo = packJson.packUpdate(task1);
 
         try {
             DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
@@ -50,3 +51,7 @@ public class Production extends Thread{
         }
     }
 }
+//    ArrayList tasks  = dbWorker.updateTaskStatus(id,task);
+//
+//    PackJson packJson = new PackJson();
+//    JSONObject jo = packJson.packList(tasks);
