@@ -22,10 +22,10 @@ public class Production extends Thread{
 
     @Override
     public void run() {
-        System.out.println("Produstion running");
+        System.out.println("Production running");
         //todo
         try {
-            for (int i = 0; i <180 ; i++) {//поменять на 180
+            for (int i = 0; i <5 ; i++) {//поменять на 180
                 TimeUnit.SECONDS.sleep(1);
 //                System.out.print(i+" ");
 

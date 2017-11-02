@@ -63,7 +63,7 @@ if(type.equalsIgnoreCase("registr")){
       registred = registration.registerNewUser(in,out,incomeConnection,server,income);
       PackJson packJson = new PackJson();
       JSONObject ans = packJson.makeRegAnswer(registred);
-    System.out.println("RegAns "+ans);
+//    System.out.println("RegAns "+ans);
 
     try {
         DataOutputStream dataOutputStream = new DataOutputStream(incomeConnection.getOutputStream());
@@ -103,7 +103,7 @@ if(type.equalsIgnoreCase("registr")){
             ParseJson parseJson = new ParseJson();
             JSONObject jo= parseJson.parseCommand(income);
 
-            System.out.println(income);
+//            System.out.println(income);
 
                 command = Integer.parseInt(jo.get("item").toString());
 

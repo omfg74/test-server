@@ -38,7 +38,7 @@ this.command =command;
             DBWorker dbWorker = new DBWorker();
             long id = dbWorker.createNewTask(task);
             task.setId(id);
-            System.out.println("id "+id);
+//            System.out.println("id "+id);
             PackJson packJson = new PackJson();
             JSONObject jo =packJson.packStartedTask(task,id);
             dataOutputStream.writeUTF(jo.toString());
